@@ -7,11 +7,33 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Print Hello World
-          command: echo "Hello, CircleCI!"
+          name: Install dependencies
+          command: |
+            pip install -r requirements.txt
+      - run:
+          name: Run Tests
+          command: pytest tests/
+
+  docker_push:
+    docker:
+      - image: docker:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Login to Docker Hub
+          command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+      - run:
+          name: Build and Push Docker Image
+          command: |
+            docker build -t $DOCKER_USER/circleci-app .
+            docker push $DOCKER_USER/circleci-app
 
 workflows:
   version: 2
-  build_and_test:
+  build_and_deploy:
     jobs:
       - build
+      - docker_push:
+          requires:
+            - build
