@@ -12,12 +12,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-<<<<<<< HEAD
-          command: |
-            pip install -r requirements.txt
-=======
           command: pip install -r requirements.txt
->>>>>>> 9d990c4 (Updated CircleCI config for local deployment)
       - run:
           name: Run Tests
           command: pytest tests/
@@ -35,9 +30,6 @@ jobs:
           name: Build and Push Docker Image
           command: |
             docker build -t $DOCKER_USER/circleci-app .
-<<<<<<< HEAD
-            docker push $DOCKER_USER/circleci-app
-=======
             docker tag $DOCKER_USER/circleci-app $DOCKER_USER/circleci-app:latest
             docker push $DOCKER_USER/circleci-app:latest
 
@@ -49,8 +41,7 @@ jobs:
           name: Pull Image & Run Container
           command: |
             docker pull $DOCKER_USER/circleci-app:latest
-            docker run -d -p 5000:5000 $DOCKER_USER/circleci-app
->>>>>>> 9d990c4 (Updated CircleCI config for local deployment)
+            docker run -d -p 5000:5000 $DOCKER_USER/circle
 
 workflows:
   version: 2
@@ -60,10 +51,6 @@ workflows:
       - docker_push:
           requires:
             - build
-<<<<<<< HEAD
-=======
       - deploy_local:
           requires:
             - docker_push
-
->>>>>>> 9d990c4 (Updated CircleCI config for local deployment)
